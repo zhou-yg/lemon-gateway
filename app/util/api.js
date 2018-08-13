@@ -43,10 +43,8 @@ const apiConfig = {
   permission: {
     get: new Config({
       headers: {
-        'app-id': PERMISSION_APP_ID,
-        'app-secret': PERMISSION_APP_SECRET,
       },
-      url: 'https://b.taovip.com/service/employee/privilege/get',
+      url: 'http://www.baidu.com',
       method: 'POST',
     }),
   },
