@@ -4,20 +4,16 @@
   "description": "weike fe gateway",
   "private": true,
   "dependencies": {
-    "egg": "^2.2.1",
-    "egg-scripts": "^2.5.0",
-    "moment": "^2.22.2"
+    "@qp/node-login-middleware": "^1.0.8",
+    "koa": "^2.5.2",
+    "koa-body": "^4.0.4",
+    "koa-ejs": "^4.1.2",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.8.2",
+    "koa-static-cache": "^5.1.2"
   },
-  "devDependencies": {
-    "autod": "^3.0.1",
-    "autod-egg": "^1.0.0",
-    "egg-bin": "^4.3.5",
-    "egg-ci": "^1.8.0",
-    "egg-mock": "^3.14.0",
-    "eslint": "^4.11.0",
-    "eslint-config-egg": "^6.0.0",
-    "webstorm-disable-index": "^1.2.0"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=8.9.0"
   },
