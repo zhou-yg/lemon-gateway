@@ -9,5 +9,23 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [];
 
+  config.log4js = {
+    appenders: {
+      out: { type: 'console' },
+    },
+    categories: {
+      'default': {
+        appenders: ['out'],
+        level: 'debug',
+      },
+      mongo: {
+        appenders: ['out'],
+        level: 'debug',
+      },
+    },
+    pm2: true,
+  };
+
+
   return config;
 };

@@ -9,9 +9,12 @@
     "koa-body": "^4.0.4",
     "koa-ejs": "^4.1.2",
     "koa-logger": "^3.2.0",
+    "koa-proxy": "^0.9.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.2",
-    "koa-static-cache": "^5.1.2"
+    "koa-static-cache": "^5.1.2",
+    "log4js": "^3.0.5",
+    "request": "^2.88.0"
   },
   "devDependencies": {},
   "engines": {
@@ -20,7 +23,7 @@
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-weike-fe-gateway",
     "stop": "egg-scripts stop --title=egg-server-weike-fe-gateway",
-    "dev": "egg-bin dev",
+    "dev": "node app/bin/www",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",

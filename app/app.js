@@ -75,7 +75,6 @@ app.use(function(ctx, next) {
   ctx.set('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
   ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
 
-  // console.log(ctx.request);
   if (ctx.request.method !== 'OPTIONS') {
     return next();
   }
@@ -164,8 +163,8 @@ app.use(async function(ctx, next) {
   logger.default.info(`404 path:${ctx.request.path}`);
 
   ctx.status = 404;
-  // ctx.body = ctx.request.path + ' NOT FOUND';
-  await ctx.render('erros/404');
+  ctx.body = ctx.request.path + ' NOT FOUND';
+  // await ctx.render('erros/404');
 });
 
 module.exports = app;
