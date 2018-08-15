@@ -1,5 +1,5 @@
 {
-  "name": "weike-fe-gateway",
+  "name": "weike-lemon-gateway",
   "version": "1.0.0",
   "description": "weike fe gateway",
   "private": true,
@@ -18,22 +18,14 @@
   },
   "devDependencies": {},
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-weike-fe-gateway",
-    "stop": "egg-scripts stop --title=egg-server-weike-fe-gateway",
-    "dev": "node app/bin/www",
-    "debug": "egg-bin debug",
-    "test": "npm run lint -- --fix && npm run test-local",
-    "test-local": "egg-bin test",
-    "cov": "egg-bin cov",
-    "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod"
-  },
-  "ci": {
-    "version": "8"
+    "dev": "node bin/server.js",
+    "server": "pm2 start bin/server.json",
+    "server-test": "pm2 start bin/server-test.json",
+    "re-server": "pm2 restart weike-lemon-gateway",
+    "pm2": "pm2",
   },
   "repository": {
     "type": "git",

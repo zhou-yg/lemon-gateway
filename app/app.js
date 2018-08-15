@@ -45,7 +45,7 @@ app.use(function(ctx, next) {
   return next();
 });
 
-app.use(services());
+// app.use(services());
 
 app.use(function(ctx, next) {
   let host;
@@ -75,32 +75,20 @@ app.use(function(ctx, next) {
   ctx.set('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
   ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
 
-  if (ctx.request.method !== 'OPTIONS') {
+  if (ctx.method !== 'OPTIONS') {
     return next();
   }
   ctx.body = 'options';
   ctx.status = 200;
-
 });
 
-app.use(staticConfigCache(path.resolve(__dirname, './public/'), {
-  maxAge: 24 * 60 * 60,
-  gzip: true,
-  prefix: `/${__PATH_PRE__}`,
-  filter(path) {
-    logger.default.info('static-path:' + JSON.stringify(path) + (!/static\/pie\/$/.test(path)));
-    return !/static\/pie\/$/.test(path);
-  },
-}));
-
-app.use(staticConfigCache(path.resolve(__dirname, './public/'), {
+app.use(staticConfigCache(path.resolve(__dirname, './public'), {
   gzip: true,
   dynamic: true,
   prefix: `/${__PATH_PRE__}`,
-  filter(path) {
-    logger.default.info('static-path2:' + JSON.stringify(path) + (/static\/pie\/$/.test(path)));
-    return /static\/pie\/$/.test(path);
-  },
+  // filter(path) {
+  //   return /static\/pie\/$/.test(path);
+  // },
 }));
 
 

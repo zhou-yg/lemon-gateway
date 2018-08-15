@@ -1,11 +1,8 @@
-const platform = process.env.PLATFORM;
 global.__DEV__ = process.env.NODE_ENV !== 'production';
 global.__TEST__ = process.env.ENV === 'test';
 global.__PRE__ = process.env.ENV === 'pre';
 global.__ONLINE__ = process.env.ENV === 'online';
-global.__PLATFORM__ = platform; // pineapple;
-global.__IS_PINEAPPLE__ = platform === 'pineapple';
-global.__PATH_PRE__ = process.env.PATH_PRE || 'pineapple';
+global.__PATH_PRE__ = process.env.PATH_PRE || 'lemon';
 global.__DB__ = 'pineapple';
 
 module.exports = (appInfo) => {

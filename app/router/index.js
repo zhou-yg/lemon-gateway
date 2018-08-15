@@ -8,8 +8,6 @@ var R = require('koa-router');
 
 var registerRouter = loadApi(path.resolve(__dirname, './api'), '');
 
-// const r2 = r1.map(p => `/${__PATH_PRE__}${p}`);
-
 router = new R({
   prefix: `/${__PATH_PRE__}`,
 });
