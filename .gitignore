@@ -11,6 +11,8 @@ run/
 *.sw*
 *.un~
 
-./.gitignore
-./app/public/services/*
-!./app/public/services/.gitkeep
+app/public/services/*
+app/public/services/*/*
+app/public/services/*/*/*
+app/public/services/*/*/*/*
+!app/public/services/.gitkeep
