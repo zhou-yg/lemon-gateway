@@ -1,6 +1,4 @@
-# weike-fe-gateway
-
-weike fe gateway
+# lemon-gateway
 
 ## QuickStart
 

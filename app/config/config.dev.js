@@ -1,4 +1,5 @@
 'use strict';
+const path = require('path');
 
 module.exports = appInfo => {
   const config = exports = {};
@@ -11,7 +12,13 @@ module.exports = appInfo => {
 
   config.log4js = {
     appenders: {
-      out: { type: 'console' },
+      out: {
+        type: 'console',
+        layout: {
+          type: 'pattern',
+          pattern: '[%p] %[ %c %] %h %m%n',
+        }
+      },
     },
     categories: {
       'default': {
@@ -26,6 +33,11 @@ module.exports = appInfo => {
     pm2: true,
   };
 
+  config.port = process.env.PORT || 8870;
+
+  config.serviceDir = path.join(__dirname, '../public/services');
+
+  config.serviceConfigFileName = 'lemon.json';
 
   return config;
 };

@@ -6,15 +6,13 @@ const dev = require('./config.dev.js');
 module.exports = appInfo => {
   const config = dev(appInfo);
 
-  merge(config, {
-    log4js: {
-      categories: {
-        'default': {
-          level: 'debug',
-        },
-        mongo: {
-          level: 'debug',
-        },
+  config.log4js = merge(config.log4js, {
+    categories: {
+      'default': {
+        level: 'info',
+      },
+      mongo: {
+        level: 'info',
       },
     },
   });

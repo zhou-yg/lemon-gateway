@@ -9,3 +9,5 @@ module.exports = function () {
     return next();
   };
 }
+
+Object.assign(module.exports, servicesObj);

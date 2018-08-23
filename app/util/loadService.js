@@ -7,7 +7,7 @@ function loadService (base, name) {
 
   if (base && files.indexOf('index.js') !== -1) {
     files = files.filter(file => {
-      return !/\.js$/.test(file) && file !== 'index.js';
+      return file !== 'index.js';
     });
   }
 
@@ -40,6 +40,7 @@ function assignKeys (obj, keys, value) {
 module.exports = function (base, name) {
 
   var servicesArr = loadService(base, name);
+
   while(servicesArr.some(obj => Array.isArray(obj))) {
     servicesArr = servicesArr.reduce((pre, next) => pre.concat(next), []);
   }

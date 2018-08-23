@@ -4,14 +4,14 @@
         "script": "bin/server.js",
         "instances": "1",
         "exec_mode": "cluster",
-        "error_file": "/data/weike-pineapple/err.log",
-        "out_file": "/data/weike-pineapple/out.log",
+        "error_file": "/data/weike-lemon-gateway/err.log",
+        "out_file": "/data/weike-lemon-gateway/out.log",
         "merge_logs": true,
 
         "env": {
           "ENV": "test",
           "NODE_ENV": "production",
-          "PORT": 8880,
+          "PORT": 8870,
           "IP": "0.0.0.0"
         },
 
@@ -19,5 +19,5 @@
         "workerInterval": 3600,
         "compress": true,
         "log_date_format": "YYYY-MM-DD HH:mm Z"
-    }],
+    }]
 }

@@ -44,7 +44,7 @@ const apiConfig = {
     get: new Config({
       headers: {
       },
-      url: 'http://www.baidu.com',
+      url: 'www.baidu.com',
       method: 'POST',
     }),
   },

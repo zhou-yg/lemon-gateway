@@ -1,8 +1,7 @@
 export ENV="online"
 export NODE_ENV="production"
 
-alias lnpm='cnpm --registry=http://120.27.130.189:7001 \
-            --registryweb=http://120.27.130.189:7002 \
+alias lnpm='cnpm --registry=http://cnpmjs.org \
             --cache=$HOME/.npm/.cache/lnpm'
 shopt -s  expand_aliases
 

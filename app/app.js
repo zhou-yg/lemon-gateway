@@ -7,7 +7,6 @@ const koa = require('koa');
 const ejsConfig = require('koa-ejs');
 const staticConfigCache = require('koa-static-cache');
 const convert = require('koa-convert');
-const loginMiddeware = require('@qp/node-login-middleware');
 
 const klogger = require('koa-logger');
 const koaBody = require('koa-body');
@@ -15,12 +14,19 @@ const koaBody = require('koa-body');
 const services = require('./services/');
 const koaSession = require('koa-session');
 
+const koaFavicon = require('koa-favicon');
+
 const app = new koa();
 
 const router = require('./router/index');
-const proxy = require('./router/proxy');
+const proxy = require('./middlewares/proxy');
+const frontPage = require('./middlewares/frontPage');
 const apiState = require('./util/apiState');
 
+// 启动项
+require('./schedule/');
+
+services.service.discovery();
 
 app.use(function(ctx, next) {
   if (ctx.request.path === '/status.stat') {
@@ -30,6 +36,10 @@ app.use(function(ctx, next) {
     return next();
   }
 });
+
+app.use(koaFavicon(path.join(__dirname, './favicon.ico'), {
+  maxAge: 0,
+}));
 
 app.use(klogger());
 
@@ -45,7 +55,7 @@ app.use(function(ctx, next) {
   return next();
 });
 
-// app.use(services());
+app.use(services());
 
 app.use(function(ctx, next) {
   let host;
@@ -53,7 +63,8 @@ app.use(function(ctx, next) {
   const referer = ctx.request.get('referer');
   const source = origin || referer;
   logger.default.info('request header host:', ctx.request.hostname);
-  logger.default.info('request header origin:', source, origin, referer);
+  logger.default.info('request header origin:', origin);
+  logger.default.info('request header referer:', referer);
 
   if (String(source).indexOf('ecrm.taovip.com') !== -1) {
     const { protocol, hostname } = url.parse(String(source));
@@ -82,39 +93,40 @@ app.use(function(ctx, next) {
   ctx.status = 200;
 });
 
-app.use(staticConfigCache(path.resolve(__dirname, './public'), {
-  gzip: true,
-  dynamic: true,
-  prefix: `/${__PATH_PRE__}`,
-  // filter(path) {
-  //   return /static\/pie\/$/.test(path);
-  // },
-}));
-
-
-app.use(koaBody({
-  formidable: {
-    uploadDir: __dirname,
-  },
-}));
-
-app.keys = [ 'weike', 'pineapple' ];
+app.keys = [ 'lemon', 'myId' ];
 app.use(koaSession({
   maxAge: 86400 * 1000,
 
 }, app));
 
-app.use(convert(loginMiddeware({
-  framework: 'koa',
-  app: 'pineapple',
-  filter: {
-    test: url => {
-      return !/^\/?(api)|(pineapple\/api)|(weike-crm)/.test(url);
-    },
-  },
-})));
 
-proxy(app);
+app.use(frontPage());
+
+app.use(staticConfigCache(path.resolve(__dirname, './public'), {
+  gzip: true,
+  dynamic: true,
+  prefix: `/${__PATH_PRE__}`,
+  // filter(path) {
+  //   console.log(`path:`, path, !/\.html$/.test(path));
+  //   return !/\.html$/.test(path);
+  // },
+}));
+
+app.use(function(ctx, next) {
+  // console.log('after public:',ctx.request.path);
+  return next();
+});
+
+
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    uploadDir: __dirname,
+  },
+}));
+
+
+app.use(proxy());
 
 const errorHandler = async (ctx, next) => {
   try {

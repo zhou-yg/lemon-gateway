@@ -7,6 +7,7 @@ yarn.lock
 coverage/
 .idea/
 run/
+__test/
 .DS_Store
 *.sw*
 *.un~
@@ -16,3 +17,6 @@ app/public/services/*/*
 app/public/services/*/*/*
 app/public/services/*/*/*/*
 !app/public/services/.gitkeep
+!app/public/services/example
+
+.v

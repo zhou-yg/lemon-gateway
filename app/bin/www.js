@@ -1,6 +1,6 @@
 'use strict';
 const path = require('path');
-const config = require('../config/index')(require(path.resolve(__dirname, '../../package.json')));
+const config = require('../config/index');
 
 const log4js = require('log4js');
 
@@ -12,6 +12,12 @@ global.logger = Object.keys(config.log4js.categories).map(c => {
   };
 }).reduce((p, n) => Object.assign(p, n), {});
 
+global.globalConfig = config;
+
 const app = require('../app');
 
-app.listen(8888);
+const PORT = config.port;
+
+app.listen(PORT);
+
+console.log(`listen on port:${PORT}`);

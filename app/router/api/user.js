@@ -13,6 +13,7 @@ module.exports = async function (ctx, next) {
       'newRoleId',
     ]),
     _data: ctx.session.userData,
+
     _l: l,
   };
 }
