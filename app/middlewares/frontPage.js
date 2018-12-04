@@ -4,7 +4,7 @@ const fs = require('fs');
 function isService(ctx) {
   const u = ctx.request.url;
 
-  return new RegExp(`^/${__PATH_PRE__}`).test(u) && /services\/[\w]+\/[\w]+\.html$/.test(ctx.request.url);
+  return new RegExp(`^/${__PATH_PRE__}`).test(u) && /services\/[\w]+\/([\w]+\.html)?$/.test(ctx.request.url);
 }
 
 function getService(ctx) {
@@ -15,8 +15,16 @@ function getService(ctx) {
   return r[1];
 }
 
+function getHtml(ctx) {
+  const u = ctx.request.url;
+
+  const r = u.match(/[\w]+.html/);
+
+  return r ? r[0] : `index.html`;
+}
+
 function serviceHTML (ctx) {
-  const htmlFile = path.join(globalConfig.serviceDir, getService(ctx), 'index.html');
+  const htmlFile = path.join(globalConfig.serviceDir, getService(ctx), getHtml(ctx));
   const tpl = fs.readFileSync(htmlFile).toString();
 
   ctx.type = 'html';

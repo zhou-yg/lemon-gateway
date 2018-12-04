@@ -14,7 +14,9 @@ global.logger = Object.keys(config.log4js.categories).map(c => {
 
 global.globalConfig = config;
 
-const app = require('../app');
+const app = require('../app')({
+  
+});
 
 const PORT = config.port;
 
