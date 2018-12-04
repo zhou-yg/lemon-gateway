@@ -29,6 +29,7 @@ require('./schedule/');
 services.service.discovery();
 
 app.use(function(ctx, next) {
+  console.log('first:', ctx.url);
   if (ctx.request.path === '/status.stat') {
     ctx.statusCode = 200;
     ctx.body = fs.readFileSync(path.join(__dirname, './public/status.stat')).toString();

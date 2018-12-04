@@ -1,31 +1,39 @@
 # lemon-gateway
 
-## QuickStart
 
-<!-- add docs here for user -->
+## view service
 
-see [egg docs][egg] for more detail.
+> /lemon/services/[folder]/[entrance.html]
 
-### Development
 
-```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
+## config file
+
+> app/public/services/[folder]/lemon.json
+
 ```
+{
+  // 转发代理设置
+  "proxy": [
+    {
+      "host": ["http://localhost:8870"], // 如果是含有多个host，则是随机试验
+      "match": "/pineapple/api/",
+      "replace": "/lemon/api/"
+    }
+  ],
+  "permission": [
 
-### Deploy
-
-```bash
-$ npm start
-$ npm stop
+  ],
+  // 区分环境，仅在测试环境下生效
+  "env": {
+    "test": {
+      "proxy": [
+        {
+          "host": "http://121.43.165.245:19003/",
+          "match": "/pineapple/proxy/weike-crm/",
+          "replace": "/"
+        }
+      ]
+    }
+  }
+}
 ```
-
-### npm scripts
-
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
-
-
-[egg]: https://eggjs.org
