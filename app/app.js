@@ -1,5 +1,5 @@
 'use strict';
-
+require('./config/');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -31,7 +31,14 @@ module.exports = (options = {}) => {
 
   options = Object.assign({
     keys: ['lemon', 'myId'],
-  }, options)
+    publicPath: path.resolve(__dirname, './public'),
+    viewPath: path.join(__dirname, 'views'),
+    servicePath: path.join(__dirname, './public/services'),
+  }, options);
+
+  Object.assign(globalConfig, {
+    serviceDir: options.servicePath,
+  });
 
   app.use(function(ctx, next) {
     console.log('first:', ctx.url);
@@ -50,7 +57,7 @@ module.exports = (options = {}) => {
   app.use(klogger());
 
   ejsConfig(app, {
-    root: path.join(__dirname, 'views'),
+    root: options.viewPath,
     layout: '',
     viewExt: 'html',
     cache: __ONLINE__ || __PRE__,
@@ -102,7 +109,7 @@ module.exports = (options = {}) => {
 
   app.use(frontPage());
 
-  app.use(staticConfigCache(path.resolve(__dirname, './public'), {
+  app.use(staticConfigCache(options.publicPath, {
     gzip: true,
     dynamic: true,
     prefix: `/${__PATH_PRE__}`,

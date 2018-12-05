@@ -34,6 +34,7 @@
     "re-server": "pm2 restart lemon-gateway",
     "pm2": "pm2"
   },
+  "main": "app/app.js",
   "repository": {
     "type": "git",
     "url": ""

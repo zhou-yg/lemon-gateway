@@ -28,4 +28,18 @@ const getConfig = (appInfo) => {
   }
 }
 
-module.exports = getConfig(appInfo);
+let config = getConfig(appInfo);
+
+const log4js = require('log4js');
+
+log4js.configure(config.log4js);
+
+global.logger = Object.keys(config.log4js.categories).map(c => {
+  return {
+    [c]: log4js.getLogger(c),
+  };
+}).reduce((p, n) => Object.assign(p, n), {});
+
+global.globalConfig = config;
+
+module.exports = config;
