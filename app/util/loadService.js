@@ -37,7 +37,7 @@ function assignKeys (obj, keys, value) {
   temp[keys[keys.length - 1]] = value;
 }
 
-module.exports = function (base, name) {
+module.exports = function (base, name = '.') {
 
   var servicesArr = loadService(base, name);
 
@@ -56,6 +56,5 @@ module.exports = function (base, name) {
     assignKeys(servicesObj, keys, obj.handler);
   });
 
-  logger.default.info('servicesObj:', servicesObj);
   return servicesObj;
 };

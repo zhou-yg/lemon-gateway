@@ -6,8 +6,10 @@ const path = require('path');
 
 function loadApi (base, name) {
   base = path.resolve(base, name);
-  const files = fs.readdirSync(path.resolve(__dirname, base));
-  return files.map(file => {
+
+  let finalPath = path.resolve(__dirname, base)
+
+  function readFile(file) {
     var filePath = path.resolve(__dirname, base, file);
     if (/\.js$/.test(file)) {
       file = file.replace(/\.js$/, '');
@@ -27,7 +29,15 @@ function loadApi (base, name) {
     } else if (fs.lstatSync(filePath).isDirectory()) {
       return loadApi(base, file);
     }
-  }).filter(_ => _);
+  }
+
+  try {
+    const files = fs.readdirSync(finalPath);
+    return files.map(readFile).filter(_ => _);
+  } catch (e) {
+    console.error(e.message);
+    return [readFile(finalPath)];
+  }
 }
 
 module.exports = function (base, name) {
@@ -41,13 +51,13 @@ module.exports = function (base, name) {
     return obj;
   });
 
-  logger.default.info(`apiArr:`, apiArr);
+  logger.default.info(`apiArr:`, base, apiArr);
 
   return function registerRouter (router, pre, apiNames) {
     apiArr.forEach(obj => {
       if (apiNames.indexOf(obj.path) !== -1 || apiNames.length === 0) {
-        logger.default.info('register api', obj.path);
-        router[obj.method](`/${pre}${obj.path}`, obj.handler);
+        logger.default.info('register api:', `${pre ? `/${pre}` : ''}${obj.path}`, obj.path);
+        router[obj.method](`${pre ? `/${pre}` : ''}${obj.path}`, obj.handler);
       }
     });
     return router;

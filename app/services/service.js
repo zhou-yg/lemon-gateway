@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {serviceDir, serviceConfigFileName} = globalConfig;
+const {serviceConfigFileName} = globalConfig;
 const _ = require('lodash');
 const serviceMap = new Map();
 
@@ -115,13 +115,15 @@ module.exports = {
   },
   discovery () {
 
-    const allService = fs.readdirSync(serviceDir).filter(name => {
-      return fs.existsSync(path.join(serviceDir, name, serviceConfigFileName));
+    const allService = fs.readdirSync(globalConfig.serviceDir).filter(name => {
+      return fs.existsSync(path.join(globalConfig.serviceDir, name, serviceConfigFileName));
     });
+
+    console.log(globalConfig.serviceDir, allService);
 
     try {
       const allConfigFiles = allService.map(sName => {
-        return JSON.parse(fs.readFileSync(path.join(serviceDir, sName, serviceConfigFileName)).toString())
+        return JSON.parse(fs.readFileSync(path.join(globalConfig.serviceDir, sName, serviceConfigFileName)).toString())
       }).map((o, i) => configValidate(allService[i], o)).map(transServiceConfig);
 
       serviceMap.clear();

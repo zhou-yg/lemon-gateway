@@ -16,29 +16,53 @@ const koaSession = require('koa-session');
 
 const koaFavicon = require('koa-favicon');
 
-const router = require('./router/index');
+const createRouter = require('./router/index');
+
 const proxy = require('./middlewares/proxy');
 const frontPage = require('./middlewares/frontPage');
+const serviceConfig = require('./middlewares/serviceConfig');
+
 const apiState = require('./util/apiState');
 
 // 启动项
 require('./schedule/');
 
-services.service.discovery();
 
-module.exports = (options = {}) => {
-  const app = new koa();
+function defaultOptions(options = {}) {
+  if (!options.root) {
+    options.root = __dirname;
+  } else {
+    options = Object.assign({
+      publicPath: path.resolve(options.root, './public'),
+      viewPath: path.join(options.root, 'views'),
+      servicePath: path.join(options.root, './public/services'),
+      nodeServicesPath: path.join(options.root, './services'),
+      routerPath: path.join(options.root, './router'),
+    }, options);
+  }
 
   options = Object.assign({
     keys: ['lemon', 'myId'],
-    publicPath: path.resolve(__dirname, './public'),
-    viewPath: path.join(__dirname, 'views'),
-    servicePath: path.join(__dirname, './public/services'),
+    // publicPath: path.resolve(options.root, './public'),
+    // viewPath: path.join(options.root, 'views'),
+    // servicePath: path.join(options.root, './public/services'),
+    // nodeServicesPath: path.join(options.root, './services'),
+    // routerPath: path.join(options.root, './router/api'),
   }, options);
+
+  return options;
+}
+
+function* createApp(options) {
+  const app = new koa();
+
+  options = defaultOptions(options);
 
   Object.assign(globalConfig, {
     serviceDir: options.servicePath,
   });
+
+  services.service.discovery();
 
   app.use(function(ctx, next) {
     console.log('first:', ctx.url);
@@ -50,11 +74,17 @@ module.exports = (options = {}) => {
     }
   });
 
+  yield { app, state: 'stat' };
+
   app.use(koaFavicon(path.join(__dirname, './favicon.ico'), {
     maxAge: 0,
   }));
 
+  yield { app, state: 'favicon' };
+
   app.use(klogger());
+
+  yield { app, state: 'logger' };
 
   ejsConfig(app, {
     root: options.viewPath,
@@ -64,11 +94,15 @@ module.exports = (options = {}) => {
     debug: __DEV__ || __TEST__,
   });
 
+  yield { app, state: 'ejs' };
+
   app.use(function(ctx, next) {
     return next();
   });
 
-  app.use(services());
+  app.use(services(options.nodeServicesPath));
+
+  yield { app, state: 'services' };
 
   app.use(function(ctx, next) {
     let host;
@@ -100,20 +134,35 @@ module.exports = (options = {}) => {
     ctx.status = 200;
   });
 
+  yield { app, state: 'cors' };
+
   app.keys = options.keys;
   app.use(koaSession({
     maxAge: 86400 * 1000,
 
   }, app));
 
+  yield { app, state: 'session' };
+
+
+  app.use(serviceConfig());
+
+  yield { app, state: 'serviceConfig' };
+
+  yield { app, state: 'basic'}
 
   app.use(frontPage());
+
+  yield { app, state: 'frontPage'}
 
   app.use(staticConfigCache(options.publicPath, {
     gzip: true,
     dynamic: true,
     prefix: `/${__PATH_PRE__}`,
   }));
+
+  yield { app, state: 'static' };
+
 
   app.use(function(ctx, next) {
     // console.log('after public:',ctx.request.path);
@@ -128,11 +177,14 @@ module.exports = (options = {}) => {
     },
   }));
 
+  yield { app, state: 'body' };
 
   app.use(proxy());
 
+  yield { app, state: 'proxy' };
+
   app.on('error', function(err) {
-    console.trace();
+    // console.trace();
     logger.default.error(err);
     logger.default.error('app.js onError, error: ', err.message);
   });
@@ -150,14 +202,22 @@ module.exports = (options = {}) => {
     }
   });
 
+  yield { app, state: 'error' };
+
   app.use(apiState({
     test(path) {
       return /api\//.test(path);
     },
   }));
 
+  yield { app, state: 'apiState' };
+
+  let router = createRouter(options.routerPath);
+
   app.use(router.routes());
   app.use(router.allowedMethods());
+
+  yield { app, state: 'router'}
 
   // app.use(async function(ctx, next) {
   //
@@ -169,3 +229,13 @@ module.exports = (options = {}) => {
 
   return app;
 };
+
+module.exports = function (op, cb) {
+  let g = createApp(op);
+  let r = g.next();
+  while (!r.done) {
+    cb(r.value);
+    r = g.next();
+  }
+  return r.value;
+}

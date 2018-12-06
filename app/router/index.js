@@ -3,20 +3,34 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 var loadApi = require('../util/loadApi');
 var R = require('koa-router');
 
-var registerRouter = loadApi(path.resolve(__dirname, './api'), '');
+module.exports = (routerPath) => {
 
-router = new R({
-  prefix: `/${__PATH_PRE__}`,
-});
-// if (!__DEV__) {
-//   router.prefix('pineapple');
-// }
+  let originApiPath = path.resolve(__dirname, './api');
+  let preName = path.parse(originApiPath).name;
 
-router = registerRouter(router, 'api', []);
+  var registerRouter = loadApi(originApiPath, '');
 
-// router = require('./views/p')(router);
+  router = new R({
+    prefix: `/${__PATH_PRE__}`,
+  });
+  router = registerRouter(router, preName, []);
 
-module.exports = router;
+  console.log(`routerPath:`, routerPath);
+
+  if (typeof routerPath === 'string') {
+    let preName2 = path.parse(routerPath).name;
+    let registerRouter2 = loadApi(routerPath, '.');
+
+    if (preName2 === 'router') {
+      preName2 = '';
+    }
+
+    router = registerRouter2(router, preName2, []);
+  }
+
+  return router;
+};

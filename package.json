@@ -1,6 +1,6 @@
 {
   "name": "lemon-gateway",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "nodejs fe gateway",
   "private": true,
   "dependencies": {

@@ -1,11 +1,21 @@
 const path = require('path');
-const loadServicce = require('../util/loadService');
+const loadService = require('../util/loadService');
 
-const servicesObj = loadServicce(path.resolve(__dirname, './'), path.resolve(__dirname, './'));
+const servicesObj = loadService(path.resolve(__dirname, './'));
 
-module.exports = function () {
+module.exports = function (op) {
+  // services path;
+  if (typeof op === 'string') {
+    op = loadService(op);
+  }
+
+  let obj = Object.assign({}, servicesObj, op);
+
+  logger.default.info('servicesObj:', servicesObj);
+  logger.default.info('servicesObj.op:', op);
+
   return function (ctx, next) {
-    ctx.services = servicesObj;
+    ctx.services = obj;
     return next();
   };
 }
