@@ -16,10 +16,12 @@ const proxyMap = new Map();
 function proxyUpdate () {
   const m = service.getServiceMap();
 
+  console.log(`proxyUpdate:`, m);
+
   if (m.size > 0) {
     proxyMap.clear();
 
-    for( [serviceName, config] of m) {
+    for( let [serviceName, config] of m) {
       if (config.proxy) {
 
         console.log(config);
@@ -30,6 +32,8 @@ function proxyUpdate () {
             host: p.host,
             match: new RegExp(p.match),
             map (path) {
+              logger.default.info(`case a proxy:`, path, p.match, p.replace);
+
               if (p.replace) {
                 const r = String(path).replace(new RegExp(p.match), p.replace);
                 return r;
@@ -48,6 +52,8 @@ function proxyUpdate () {
             });
           }
 
+          console.log(`proxyConfigOne:`, proxyConfigOne);
+
           const r = convert(proxy(proxyConfigOne));
           r._proxyConfig = proxyConfigOne;
           return r;
@@ -62,7 +68,10 @@ proxyUpdate();
 async function proxyCompose(serviceName, ctx, next) {
   var proxyArr = serviceName ? proxyMap.get(serviceName) : null;
 
+  console.log(proxyMap);
+
   if (proxyArr) {
+
     const composedProxy = proxyArr.reduceRight((nextFn, proxy) => {
       return async () => {
         try {
@@ -102,6 +111,8 @@ module.exports = function () {
     serviceName = serviceName ? serviceName[1] : null;
 
     if (serviceName) {
+      logger.default.info(`proxy serviceName:`, serviceName);
+
       return await proxyCompose(serviceName, ctx, next);
     } else {
       await next();

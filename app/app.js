@@ -21,6 +21,7 @@ const createRouter = require('./router/index');
 const proxy = require('./middlewares/proxy');
 const frontPage = require('./middlewares/frontPage');
 const serviceConfig = require('./middlewares/serviceConfig');
+const watchServices = require('./schedule/watchServices');
 
 const apiState = require('./util/apiState');
 
@@ -62,7 +63,7 @@ function* createApp(options) {
     serviceDir: options.servicePath,
   });
 
-  services.service.discovery();
+  watchServices.discovery();
 
   app.use(function(ctx, next) {
     console.log('first:', ctx.url);

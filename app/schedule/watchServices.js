@@ -51,4 +51,5 @@ discoveryCallback();
 
 module.exports = {
   on: seriviceEvt.on.bind(seriviceEvt),
+  discovery: () => discoveryCallback(),
 }

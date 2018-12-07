@@ -42,4 +42,11 @@ global.logger = Object.keys(config.log4js.categories).map(c => {
 
 global.globalConfig = config;
 
+
+logger.default.info('env.__DEV__ ==> ', __DEV__);
+logger.default.info('env.__TEST__ ==> ', __TEST__);
+logger.default.info('env.__PRE__ ==> ', __PRE__);
+logger.default.info('env.__ONLINE__ ==> ', __ONLINE__);
+logger.default.info('env.__PATH_PRE__ ==> ', __PATH_PRE__);
+
 module.exports = config;
