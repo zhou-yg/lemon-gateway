@@ -170,6 +170,9 @@ function* createApp(options) {
     return next();
   });
 
+  app.use(proxy());
+
+  yield { app, state: 'proxy' };
 
   app.use(koaBody({
     multipart: true,
@@ -179,10 +182,6 @@ function* createApp(options) {
   }));
 
   yield { app, state: 'body' };
-
-  app.use(proxy());
-
-  yield { app, state: 'proxy' };
 
   app.on('error', function(err) {
     // console.trace();
